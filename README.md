@@ -37,7 +37,7 @@ Add to your Cursor MCP config (`~/.cursor/mcp.json` or project
       "args": ["/absolute/path/to/pretty-mcp/dist/index.js"],
       "env": {
         "PRETTY_PROMPT_API_KEY": "pp_mcp_...",
-        "PRETTY_PROMPT_BACKEND_URL": "https://production.pretty-prompt.co",
+        "PRETTY_PROMPT_BACKEND_URL": "https://production.pretty-prompt.com",
         "PRETTY_PROMPT_SUPABASE_URL": "https://api.pretty-prompt.com",
         "PRETTY_PROMPT_SUPABASE_ANON_KEY": "your-anon-key"
       }
