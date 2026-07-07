@@ -33,31 +33,39 @@ Add to your Cursor MCP config (`~/.cursor/mcp.json` or project
 {
   "mcpServers": {
     "pretty-prompt": {
-      "command": "node",
-      "args": ["/absolute/path/to/pretty-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "@pretty-prompt/mcp@latest"],
       "env": {
-        "PRETTY_PROMPT_API_KEY": "pp_mcp_...",
-        "PRETTY_PROMPT_BACKEND_URL": "https://production.pretty-prompt.com",
-        "PRETTY_PROMPT_SUPABASE_URL": "https://api.pretty-prompt.com",
-        "PRETTY_PROMPT_SUPABASE_ANON_KEY": "your-anon-key"
+        "PRETTY_PROMPT_API_KEY": "pp_mcp_..."
       }
     }
   }
 }
 ```
 
+For local development, override the production defaults:
+
+```json
+"env": {
+  "PRETTY_PROMPT_API_KEY": "pp_mcp_...",
+  "PRETTY_PROMPT_BACKEND_URL": "http://0.0.0.0:8000",
+  "PRETTY_PROMPT_SUPABASE_URL": "http://127.0.0.1:54321",
+  "PRETTY_PROMPT_SUPABASE_ANON_KEY": "your-local-anon-key"
+}
+```
+
 ## Environment variables
 
-| Variable                          | Required | Description                          |
-| --------------------------------- | -------- | ------------------------------------ |
-| `PRETTY_PROMPT_API_KEY`           | Yes      | API key from settings (`pp_mcp_...`) |
-| `PRETTY_PROMPT_BACKEND_URL`       | Yes      | FastAPI backend URL                  |
-| `PRETTY_PROMPT_SUPABASE_URL`      | Yes      | Supabase project URL                 |
-| `PRETTY_PROMPT_SUPABASE_ANON_KEY` | Yes      | Supabase anon key                    |
+| Variable | Required | Default | Description |
+| -------- | -------- | ------- | ----------- |
+| `PRETTY_PROMPT_API_KEY` | Yes | — | API key from settings (`pp_mcp_...`) |
+| `PRETTY_PROMPT_BACKEND_URL` | No | `https://production.pretty-prompt.com` | FastAPI backend URL |
+| `PRETTY_PROMPT_SUPABASE_URL` | No | `https://api.pretty-prompt.com` | Supabase project URL |
+| `PRETTY_PROMPT_SUPABASE_ANON_KEY` | No | Production anon key | Supabase anon key |
 
 ## Local development
 
-Point env vars at local services:
+Override env vars to point at local services:
 
 ```bash
 PRETTY_PROMPT_BACKEND_URL=http://0.0.0.0:8000
