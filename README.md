@@ -1,14 +1,17 @@
 # Pretty Prompt MCP Server
 
-MCP server that exposes your Pretty Prompt library to Cursor, Claude Desktop,
-and other MCP clients.
+MCP server that exposes your Pretty Prompt library and prompt improver to
+Cursor, Claude Desktop, and other MCP clients.
 
 ## Tools
 
-| Tool                   | Description                          |
-| ---------------------- | ------------------------------------ |
-| `list_library_prompts` | List saved prompts from your library |
-| `save_to_library`      | Save a prompt to your library        |
+| Tool                    | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
+| `list_library_prompts`  | List saved prompts from your library                     |
+| `save_to_library`       | Save a prompt to your library                            |
+| `list_library_folders`  | List folders in your library                             |
+| `move_prompt_to_folder` | Move a prompt into a folder (or to root)                 |
+| `improve_prompt`        | Improve/refine a prompt (uses your Pretty Prompt credits) |
 
 ## Setup
 

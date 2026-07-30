@@ -6,6 +6,9 @@ import { EdgeFunctionClient } from "./client/edge.js";
 import { BackendClient } from "./client/backend.js";
 import { registerListLibraryPrompts } from "./tools/library.js";
 import { registerSaveToLibrary } from "./tools/save-to-library.js";
+import { registerImprovePrompt } from "./tools/improve-prompt.js";
+import { registerListLibraryFolders } from "./tools/folders.js";
+import { registerMovePromptToFolder } from "./tools/move-prompt-to-folder.js";
 
 async function main() {
   const config = loadConfig();
@@ -15,11 +18,14 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.1.0",
+    version: "0.3.0",
   });
 
   registerListLibraryPrompts(server, backend);
   registerSaveToLibrary(server, edge);
+  registerListLibraryFolders(server, backend);
+  registerMovePromptToFolder(server, backend);
+  registerImprovePrompt(server, edge);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
