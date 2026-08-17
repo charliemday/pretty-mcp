@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { BackendClient } from "../client/backend.js";
+import { withToolTracking, type McpAnalytics } from "../analytics/index.js";
 
 interface FoldersResponse {
   folders?: Array<{
@@ -19,6 +20,7 @@ function textResult(data: unknown) {
 export function registerListLibraryFolders(
   server: McpServer,
   backend: BackendClient,
+  analytics: McpAnalytics,
 ) {
   server.registerTool(
     "list_library_folders",
@@ -29,12 +31,12 @@ export function registerListLibraryFolders(
         "Folders are a flat list; parent_id indicates nesting (null = root).",
       inputSchema: {},
     },
-    async () => {
+    withToolTracking(analytics, "list_library_folders", async () => {
       const result = await backend.get<FoldersResponse>("/library/folders");
       return textResult({
         folders: result.folders ?? [],
         total: result.total ?? result.folders?.length ?? 0,
       });
-    },
+    }),
   );
 }

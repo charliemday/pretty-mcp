@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { BackendClient } from "../client/backend.js";
+import { withToolTracking, type McpAnalytics } from "../analytics/index.js";
 
 interface MovePromptResponse {
   id?: number;
@@ -18,6 +19,7 @@ function textResult(data: unknown) {
 export function registerMovePromptToFolder(
   server: McpServer,
   backend: BackendClient,
+  analytics: McpAnalytics,
 ) {
   server.registerTool(
     "move_prompt_to_folder",
@@ -39,12 +41,16 @@ export function registerMovePromptToFolder(
           .describe("Destination folder UUID, or null for root"),
       },
     },
-    async ({ prompt_id, folder_id }) => {
-      const result = await backend.patch<MovePromptResponse>(
-        `/library/prompts/${prompt_id}/folder`,
-        { folder_id: folder_id ?? null },
-      );
-      return textResult(result);
-    },
+    withToolTracking(
+      analytics,
+      "move_prompt_to_folder",
+      async ({ prompt_id, folder_id }) => {
+        const result = await backend.patch<MovePromptResponse>(
+          `/library/prompts/${prompt_id}/folder`,
+          { folder_id: folder_id ?? null },
+        );
+        return textResult(result);
+      },
+    ),
   );
 }

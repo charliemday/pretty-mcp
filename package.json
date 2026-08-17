@@ -1,6 +1,6 @@
 {
   "name": "@pretty-prompt/mcp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "MCP server for Pretty Prompt — browse, save, organize, and improve prompts",
   "type": "module",
   "main": "dist/index.js",

@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { BackendClient } from "../client/backend.js";
+import { withToolTracking, type McpAnalytics } from "../analytics/index.js";
 
 interface LibraryTag {
   id: string;
@@ -40,6 +41,7 @@ function textResult(data: unknown) {
 export function registerListLibraryPrompts(
   server: McpServer,
   backend: BackendClient,
+  analytics: McpAnalytics,
 ) {
   server.registerTool(
     "list_library_prompts",
@@ -64,7 +66,12 @@ export function registerListLibraryPrompts(
         offset: z.number().int().min(0).optional().describe("Pagination offset"),
       },
     },
-    async ({ search, favorites_only, limit, offset }) => {
+    withToolTracking(analytics, "list_library_prompts", async ({
+      search,
+      favorites_only,
+      limit,
+      offset,
+    }) => {
       const params: Record<string, string> = {};
       if (limit !== undefined) {
         params.paginate = "true";
@@ -90,6 +97,6 @@ export function registerListLibraryPrompts(
         prompts: items.map(trimPrompt),
         total,
       });
-    },
+    }),
   );
 }

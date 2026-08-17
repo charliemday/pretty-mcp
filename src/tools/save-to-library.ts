@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { EdgeFunctionClient } from "../client/edge.js";
+import { withToolTracking, type McpAnalytics } from "../analytics/index.js";
 
 function textResult(data: unknown) {
   return {
@@ -11,6 +12,7 @@ function textResult(data: unknown) {
 export function registerSaveToLibrary(
   server: McpServer,
   edge: EdgeFunctionClient,
+  analytics: McpAnalytics,
 ) {
   server.registerTool(
     "save_to_library",
@@ -21,12 +23,12 @@ export function registerSaveToLibrary(
         title: z.string().optional().describe("Optional display title"),
       },
     },
-    async ({ prompt, title }) => {
+    withToolTracking(analytics, "save_to_library", async ({ prompt, title }) => {
       const result = await edge.invoke("create-prompt", {
         prompt,
         ...(title ? { title } : {}),
       });
       return textResult(result);
-    },
+    }),
   );
 }

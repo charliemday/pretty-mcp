@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { EdgeFunctionClient } from "../client/edge.js";
+import { withToolTracking, type McpAnalytics } from "../analytics/index.js";
 
 interface ImprovedPromptSection {
   section_title?: string;
@@ -118,6 +119,7 @@ function formatImproveResult(
 export function registerImprovePrompt(
   server: McpServer,
   edge: EdgeFunctionClient,
+  analytics: McpAnalytics,
 ) {
   server.registerTool(
     "improve_prompt",
@@ -160,7 +162,7 @@ export function registerImprovePrompt(
           .describe("If true, also save the improved prompt to the library"),
       },
     },
-    async ({
+    withToolTracking(analytics, "improve_prompt", async ({
       prompt,
       category,
       provider,
@@ -204,6 +206,6 @@ export function registerImprovePrompt(
       }
 
       return textResult(result);
-    },
+    }),
   );
 }

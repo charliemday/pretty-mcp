@@ -7,9 +7,31 @@ export interface TokenResponse {
   token_type: string;
 }
 
+interface JwtPayload {
+  email?: string;
+  sub?: string;
+}
+
+function parseJwtPayload(token: string): JwtPayload {
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    return {};
+  }
+
+  try {
+    const payload = JSON.parse(
+      Buffer.from(parts[1], "base64url").toString("utf8"),
+    ) as JwtPayload;
+    return payload;
+  } catch {
+    return {};
+  }
+}
+
 export class AuthManager {
   private accessToken: string | null = null;
   private expiresAt = 0;
+  private userEmail: string | null = null;
 
   constructor(private readonly config: Config) {}
 
@@ -36,6 +58,15 @@ export class AuthManager {
     const data = (await res.json()) as TokenResponse;
     this.accessToken = data.access_token;
     this.expiresAt = now + data.expires_in * 1000;
+
+    const payload = parseJwtPayload(data.access_token);
+    this.userEmail = payload.email?.trim() || null;
+
     return this.accessToken;
+  }
+
+  async getUserEmail(): Promise<string | null> {
+    await this.getAccessToken();
+    return this.userEmail;
   }
 }

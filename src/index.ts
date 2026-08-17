@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { McpAnalytics } from "./analytics/index.js";
 import { loadConfig } from "./config.js";
 import { AuthManager } from "./auth.js";
 import { EdgeFunctionClient } from "./client/edge.js";
@@ -13,19 +14,22 @@ import { registerMovePromptToFolder } from "./tools/move-prompt-to-folder.js";
 async function main() {
   const config = loadConfig();
   const auth = new AuthManager(config);
+  const analytics = new McpAnalytics(config, auth);
   const edge = new EdgeFunctionClient(config, auth);
   const backend = new BackendClient(config, auth);
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.0",
+    version: "0.3.1",
   });
 
-  registerListLibraryPrompts(server, backend);
-  registerSaveToLibrary(server, edge);
-  registerListLibraryFolders(server, backend);
-  registerMovePromptToFolder(server, backend);
-  registerImprovePrompt(server, edge);
+  registerListLibraryPrompts(server, backend, analytics);
+  registerSaveToLibrary(server, edge, analytics);
+  registerListLibraryFolders(server, backend, analytics);
+  registerMovePromptToFolder(server, backend, analytics);
+  registerImprovePrompt(server, edge, analytics);
+
+  void analytics.trackServerStarted();
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

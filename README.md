@@ -65,8 +65,22 @@ For local development, override the production defaults:
 | `PRETTY_PROMPT_BACKEND_URL` | No | `https://production.pretty-prompt.com` | FastAPI backend URL |
 | `PRETTY_PROMPT_SUPABASE_URL` | No | `https://api.pretty-prompt.com` | Supabase project URL |
 | `PRETTY_PROMPT_SUPABASE_ANON_KEY` | No | Production anon key | Supabase anon key |
+| `PRETTY_PROMPT_ANALYTICS` | No | enabled | Set to `false` to disable PostHog analytics |
+| `PRETTY_PROMPT_POSTHOG_KEY` | No | Production PostHog key | Override PostHog project key |
 
-## Local development
+## Analytics
+
+The MCP server sends PostHog events (fire-and-forget) for:
+
+| Event | When |
+| ----- | ---- |
+| `mcp_server_started` | Each time the server process starts and authenticates |
+| `mcp_first_connected` | First successful connection for an API key on this machine |
+| `mcp_tool_called` | Each tool invocation (name, success, duration, sanitized params) |
+
+Events are attributed to the user's email from the MCP access token. Prompt text is never sent — only lengths and flags.
+
+Disable locally with `PRETTY_PROMPT_ANALYTICS=false`.
 
 Override env vars to point at local services:
 
