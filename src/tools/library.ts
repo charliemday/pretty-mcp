@@ -80,6 +80,7 @@ export function registerListLibraryPrompts(
       }
       if (search) params.q = search;
       if (favorites_only) params.favorites_only = "true";
+      params.enrichment = "lite";
 
       const result = await backend.get<LibraryPromptRow[] | LibraryListResponse>(
         "/library/prompts",
