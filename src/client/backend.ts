@@ -91,6 +91,15 @@ export class BackendClient {
       throw new PrettyPromptError(res.status, text);
     }
 
-    return res.json() as Promise<T>;
+    if (res.status === 204) {
+      return {} as T;
+    }
+
+    const text = await res.text();
+    if (!text) {
+      return {} as T;
+    }
+
+    return JSON.parse(text) as T;
   }
 }

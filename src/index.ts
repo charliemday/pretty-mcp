@@ -7,6 +7,7 @@ import { EdgeFunctionClient } from "./client/edge.js";
 import { BackendClient } from "./client/backend.js";
 import { registerListLibraryPrompts } from "./tools/library.js";
 import { registerSaveToLibrary } from "./tools/save-to-library.js";
+import { registerDeleteLibraryPrompt } from "./tools/delete-library-prompt.js";
 import { registerImprovePrompt } from "./tools/improve-prompt.js";
 import { registerListLibraryFolders } from "./tools/folders.js";
 import { registerMovePromptToFolder } from "./tools/move-prompt-to-folder.js";
@@ -25,11 +26,12 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.4",
+    version: "0.3.5",
   });
 
   registerListLibraryPrompts(server, backend, analytics);
   registerSaveToLibrary(server, edge, analytics);
+  registerDeleteLibraryPrompt(server, backend, analytics);
   registerListLibraryFolders(server, backend, analytics);
   registerCreateLibraryFolder(server, backend, analytics);
   registerRenameLibraryFolder(server, backend, analytics);
