@@ -10,6 +10,8 @@ Cursor, Claude Desktop, and other MCP clients.
 | `list_library_prompts`  | List saved prompts from your library                     |
 | `save_to_library`       | Save a prompt to your library                            |
 | `list_library_folders`  | List folders in your library                             |
+| `create_library_folder` | Create a folder (optionally nested under a parent)     |
+| `rename_library_folder` | Rename an existing folder                                |
 | `move_prompt_to_folder` | Move a prompt into a folder (or to root)                 |
 | `improve_prompt`        | Improve/refine a prompt (uses your Pretty Prompt credits) |
 
