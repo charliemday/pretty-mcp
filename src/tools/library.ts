@@ -13,8 +13,16 @@ interface LibraryPromptRow {
   id: number;
   title: string | null;
   prompt: string | null;
+  folder?: string | null;
   tags?: LibraryTag[];
-  isFavorite?: boolean;
+  is_favorite?: boolean;
+}
+
+interface FoldersResponse {
+  folders?: Array<{
+    id: string;
+    name: string | null;
+  }>;
 }
 
 interface LibraryListResponse {
@@ -22,13 +30,21 @@ interface LibraryListResponse {
   total?: number;
 }
 
-function trimPrompt(row: LibraryPromptRow) {
+function trimPrompt(
+  row: LibraryPromptRow,
+  folderNames: Map<string, string>,
+) {
+  const folderId = row.folder ?? null;
   return {
     id: row.id,
     title: row.title,
     prompt: row.prompt,
     tags: row.tags?.map((t) => t.name) ?? [],
-    is_favorite: row.isFavorite ?? false,
+    is_favorite: row.is_favorite ?? false,
+    folder_id: folderId,
+    ...(folderId
+      ? { folder_name: folderNames.get(folderId) ?? null }
+      : {}),
   };
 }
 
@@ -46,7 +62,9 @@ export function registerListLibraryPrompts(
   server.registerTool(
     "list_library_prompts",
     {
-      description: "List saved prompts from the user's Pretty Prompt library.",
+      description:
+        "List saved prompts from the user's Pretty Prompt library. " +
+        "Each prompt includes folder_id and folder_name when assigned to a folder.",
       inputSchema: {
         search: z
           .string()
@@ -56,6 +74,10 @@ export function registerListLibraryPrompts(
           .boolean()
           .optional()
           .describe("Return only favourite prompts"),
+        folder_id: z
+          .string()
+          .optional()
+          .describe("When set, return only prompts in this folder"),
         limit: z
           .number()
           .int()
@@ -69,6 +91,7 @@ export function registerListLibraryPrompts(
     withToolTracking(analytics, "list_library_prompts", async ({
       search,
       favorites_only,
+      folder_id,
       limit,
       offset,
     }) => {
@@ -80,11 +103,22 @@ export function registerListLibraryPrompts(
       }
       if (search) params.q = search;
       if (favorites_only) params.favorites_only = "true";
+      if (folder_id) params.folder_id = folder_id;
       params.enrichment = "lite";
 
-      const result = await backend.get<LibraryPromptRow[] | LibraryListResponse>(
-        "/library/prompts",
-        params,
+      const [result, foldersResult] = await Promise.all([
+        backend.get<LibraryPromptRow[] | LibraryListResponse>(
+          "/library/prompts",
+          params,
+        ),
+        backend.get<FoldersResponse>("/library/folders"),
+      ]);
+
+      const folderNames = new Map(
+        (foldersResult.folders ?? []).map((folder) => [
+          folder.id,
+          folder.name ?? "",
+        ]),
       );
 
       const items = Array.isArray(result)
@@ -95,7 +129,7 @@ export function registerListLibraryPrompts(
         : (result.total ?? items.length);
 
       return textResult({
-        prompts: items.map(trimPrompt),
+        prompts: items.map((row) => trimPrompt(row, folderNames)),
         total,
       });
     }),

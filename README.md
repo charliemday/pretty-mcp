@@ -12,6 +12,7 @@ Cursor, Claude Desktop, and other MCP clients.
 | `list_library_folders`  | List folders in your library                             |
 | `create_library_folder` | Create a folder (optionally nested under a parent)     |
 | `rename_library_folder` | Rename an existing folder                                |
+| `delete_library_folder` | Delete a folder (prompts move to root; optional strategies) |
 | `move_prompt_to_folder` | Move a prompt into a folder (or to root)                 |
 | `improve_prompt`        | Improve/refine a prompt (uses your Pretty Prompt credits) |
 

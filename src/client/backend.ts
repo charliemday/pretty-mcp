@@ -75,4 +75,22 @@ export class BackendClient {
 
     return res.json() as Promise<T>;
   }
+
+  async delete<T>(path: string, params?: Record<string, string>): Promise<T> {
+    const token = await this.auth.getAccessToken();
+    const res = await fetch(this.url(path, params).toString(), {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new PrettyPromptError(res.status, text);
+    }
+
+    return res.json() as Promise<T>;
+  }
 }

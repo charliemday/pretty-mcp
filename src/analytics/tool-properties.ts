@@ -10,7 +10,7 @@ export function runtimeProperties(): Record<string, string> {
   return {
     platform: process.platform,
     node_version: process.version,
-    server_version: "0.3.2",
+    server_version: "0.3.4",
   };
 }
 
@@ -25,6 +25,8 @@ export function toolCallProperties(
           typeof args.search === "string" && args.search.trim().length > 0,
         ),
         favorites_only: args.favorites_only === true,
+        has_folder_id:
+          typeof args.folder_id === "string" && args.folder_id.trim().length > 0,
         has_pagination: args.limit !== undefined,
         limit: typeof args.limit === "number" ? args.limit : 0,
         offset: typeof args.offset === "number" ? args.offset : 0,
@@ -46,6 +48,12 @@ export function toolCallProperties(
     case "rename_library_folder":
       return {
         name_length: typeof args.name === "string" ? args.name.length : 0,
+      };
+    case "delete_library_folder":
+      return {
+        strategy:
+          typeof args.strategy === "string" ? args.strategy : "unfile_prompts_only",
+        dry_run: args.dry_run === true,
       };
     case "move_prompt_to_folder":
       return {

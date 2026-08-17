@@ -13,6 +13,7 @@ import { registerMovePromptToFolder } from "./tools/move-prompt-to-folder.js";
 import {
   registerCreateLibraryFolder,
   registerRenameLibraryFolder,
+  registerDeleteLibraryFolder,
 } from "./tools/create-rename-folder.js";
 
 async function main() {
@@ -24,7 +25,7 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.2",
+    version: "0.3.4",
   });
 
   registerListLibraryPrompts(server, backend, analytics);
@@ -32,6 +33,7 @@ async function main() {
   registerListLibraryFolders(server, backend, analytics);
   registerCreateLibraryFolder(server, backend, analytics);
   registerRenameLibraryFolder(server, backend, analytics);
+  registerDeleteLibraryFolder(server, backend, analytics);
   registerMovePromptToFolder(server, backend, analytics);
   registerImprovePrompt(server, edge, analytics);
 
