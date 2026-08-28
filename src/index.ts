@@ -6,8 +6,11 @@ import { AuthManager } from "./auth.js";
 import { EdgeFunctionClient } from "./client/edge.js";
 import { BackendClient } from "./client/backend.js";
 import { registerListLibraryPrompts } from "./tools/library.js";
+import { registerGetLibraryPrompt } from "./tools/get-library-prompt.js";
 import { registerSaveToLibrary } from "./tools/save-to-library.js";
 import { registerDeleteLibraryPrompt } from "./tools/delete-library-prompt.js";
+import { registerUpdateLibraryPrompt } from "./tools/update-library-prompt.js";
+import { registerFavoriteLibraryPrompt } from "./tools/favorite-library-prompt.js";
 import { registerImprovePrompt } from "./tools/improve-prompt.js";
 import { registerListLibraryFolders } from "./tools/folders.js";
 import { registerMovePromptToFolder } from "./tools/move-prompt-to-folder.js";
@@ -16,6 +19,15 @@ import {
   registerRenameLibraryFolder,
   registerDeleteLibraryFolder,
 } from "./tools/create-rename-folder.js";
+import {
+  registerListLibraryTags,
+  registerGetLibraryTag,
+  registerCreateLibraryTag,
+  registerUpdateLibraryTag,
+  registerDeleteLibraryTag,
+  registerAddTagToLibraryPrompt,
+  registerRemoveTagFromLibraryPrompt,
+} from "./tools/tags.js";
 
 async function main() {
   const config = loadConfig();
@@ -26,17 +38,27 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.5",
+    version: "0.3.9",
   });
 
   registerListLibraryPrompts(server, backend, analytics);
+  registerGetLibraryPrompt(server, backend, analytics);
   registerSaveToLibrary(server, edge, analytics);
   registerDeleteLibraryPrompt(server, backend, analytics);
+  registerUpdateLibraryPrompt(server, backend, analytics);
+  registerFavoriteLibraryPrompt(server, backend, analytics);
   registerListLibraryFolders(server, backend, analytics);
   registerCreateLibraryFolder(server, backend, analytics);
   registerRenameLibraryFolder(server, backend, analytics);
   registerDeleteLibraryFolder(server, backend, analytics);
   registerMovePromptToFolder(server, backend, analytics);
+  registerListLibraryTags(server, backend, analytics);
+  registerGetLibraryTag(server, backend, analytics);
+  registerCreateLibraryTag(server, backend, analytics);
+  registerUpdateLibraryTag(server, backend, analytics);
+  registerDeleteLibraryTag(server, backend, analytics);
+  registerAddTagToLibraryPrompt(server, backend, analytics);
+  registerRemoveTagFromLibraryPrompt(server, backend, analytics);
   registerImprovePrompt(server, edge, analytics);
 
   void analytics.trackServerStarted();

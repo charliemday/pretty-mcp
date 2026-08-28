@@ -9,13 +9,17 @@ interface LibraryTag {
   color: string | null;
 }
 
-interface LibraryPromptRow {
+export interface LibraryPromptRow {
   id: number;
   title: string | null;
   prompt: string | null;
   folder?: string | null;
   tags?: LibraryTag[];
   is_favorite?: boolean;
+}
+
+export interface LibraryPromptDetailRow extends LibraryPromptRow {
+  notes?: string | null;
 }
 
 interface FoldersResponse {
@@ -30,7 +34,7 @@ interface LibraryListResponse {
   total?: number;
 }
 
-function trimPrompt(
+export function trimPrompt(
   row: LibraryPromptRow,
   folderNames: Map<string, string>,
 ) {
@@ -46,6 +50,17 @@ function trimPrompt(
       ? { folder_name: folderNames.get(folderId) ?? null }
       : {}),
   };
+}
+
+export function trimPromptDetail(
+  row: LibraryPromptDetailRow,
+  folderNames: Map<string, string>,
+) {
+  const payload = trimPrompt(row, folderNames);
+  if (row.notes !== undefined && row.notes !== null) {
+    return { ...payload, notes: row.notes };
+  }
+  return payload;
 }
 
 function textResult(data: unknown) {

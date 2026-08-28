@@ -8,13 +8,23 @@ Cursor, Claude Desktop, and other MCP clients.
 | Tool                    | Description                                              |
 | ----------------------- | -------------------------------------------------------- |
 | `list_library_prompts`  | List saved prompts from your library                     |
+| `get_library_prompt`    | Fetch one prompt by id (full text, folder, tags, notes)  |
 | `save_to_library`       | Save a prompt to your library                            |
+| `update_library_prompt` | Update title, text, favourite status, or notes           |
+| `favorite_library_prompt` | Favourite or unfavourite a prompt by id                |
 | `delete_library_prompt` | Permanently delete a prompt from your library            |
 | `list_library_folders`  | List folders in your library                             |
 | `create_library_folder` | Create a folder (optionally nested under a parent)     |
 | `rename_library_folder` | Rename an existing folder                                |
 | `delete_library_folder` | Delete a folder (prompts move to root; optional strategies) |
 | `move_prompt_to_folder` | Move a prompt into a folder (or to root)                 |
+| `list_library_tags`     | List all tags (UUID id, name, color)                      |
+| `get_library_tag`       | Fetch one tag by UUID                                      |
+| `create_library_tag`    | Create a new tag                                           |
+| `update_library_tag`    | Rename or recolor a tag by UUID                            |
+| `delete_library_tag`    | Delete a tag by UUID                                       |
+| `add_tag_to_library_prompt` | Apply a tag to a prompt by ids                         |
+| `remove_tag_from_library_prompt` | Remove a tag from a prompt by ids                 |
 | `improve_prompt`        | Improve/refine a prompt (uses your Pretty Prompt credits) |
 
 ## Setup
