@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { PRODUCTION_POSTHOG_KEY } from "../defaults.js";
 
 const POSTHOG_URL = "https://us.i.posthog.com/i/v0/e/";
@@ -24,17 +23,23 @@ export async function sendPosthogEvent(
     return;
   }
 
+  const resolvedDistinctId = distinctId?.trim();
+  if (!resolvedDistinctId) {
+    return;
+  }
+
   try {
     const payload = {
       api_key: posthogApiKey(),
       event,
-      distinct_id: distinctId?.trim() || randomUUID(),
+      distinct_id: resolvedDistinctId,
       properties: {
         ...properties,
         timestamp: new Date().toISOString(),
         source: "pretty_mcp",
         $lib: "pretty_mcp",
-        $process_person_profile: Boolean(distinctId?.trim()),
+        $process_person_profile: true,
+        email: resolvedDistinctId.includes("@") ? resolvedDistinctId : undefined,
       },
     };
 

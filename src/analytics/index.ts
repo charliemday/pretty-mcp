@@ -20,7 +20,11 @@ export class McpAnalytics {
   }
 
   private async distinctId(): Promise<string | null> {
-    return this.auth.getUserEmail();
+    const email = await this.auth.getUserEmail();
+    if (email) {
+      return email;
+    }
+    return this.auth.getUserId();
   }
 
   async trackServerStarted(): Promise<void> {

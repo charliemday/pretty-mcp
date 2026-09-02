@@ -32,6 +32,7 @@ export class AuthManager {
   private accessToken: string | null = null;
   private expiresAt = 0;
   private userEmail: string | null = null;
+  private userId: string | null = null;
 
   constructor(private readonly config: Config) {}
 
@@ -61,6 +62,7 @@ export class AuthManager {
 
     const payload = parseJwtPayload(data.access_token);
     this.userEmail = payload.email?.trim() || null;
+    this.userId = payload.sub?.trim() || null;
 
     return this.accessToken;
   }
@@ -68,5 +70,10 @@ export class AuthManager {
   async getUserEmail(): Promise<string | null> {
     await this.getAccessToken();
     return this.userEmail;
+  }
+
+  async getUserId(): Promise<string | null> {
+    await this.getAccessToken();
+    return this.userId;
   }
 }
