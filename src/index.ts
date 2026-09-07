@@ -28,6 +28,11 @@ import {
   registerAddTagToLibraryPrompt,
   registerRemoveTagFromLibraryPrompt,
 } from "./tools/tags.js";
+import {
+  registerListContextSnippets,
+  registerCreateContextSnippet,
+  registerUpdateContextSnippet,
+} from "./tools/context-snippets.js";
 
 async function main() {
   const config = loadConfig();
@@ -38,7 +43,7 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.9",
+    version: "0.3.11",
   });
 
   registerListLibraryPrompts(server, backend, analytics);
@@ -59,6 +64,9 @@ async function main() {
   registerDeleteLibraryTag(server, backend, analytics);
   registerAddTagToLibraryPrompt(server, backend, analytics);
   registerRemoveTagFromLibraryPrompt(server, backend, analytics);
+  registerListContextSnippets(server, backend, analytics);
+  registerCreateContextSnippet(server, backend, analytics);
+  registerUpdateContextSnippet(server, backend, analytics);
   registerImprovePrompt(server, edge, analytics);
 
   void analytics.trackServerStarted();

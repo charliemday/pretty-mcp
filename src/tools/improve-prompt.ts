@@ -149,7 +149,9 @@ export function registerImprovePrompt(
         context_snippet_ids: z
           .array(z.number().int())
           .optional()
-          .describe("Specific context snippet IDs to include"),
+          .describe(
+            "Specific context snippet IDs to include (from list_context_snippets)",
+          ),
         question_answers: z
           .record(z.array(z.string()))
           .optional()

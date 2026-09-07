@@ -25,6 +25,9 @@ Cursor, Claude Desktop, and other MCP clients.
 | `delete_library_tag`    | Delete a tag by UUID                                       |
 | `add_tag_to_library_prompt` | Apply a tag to a prompt by ids                         |
 | `remove_tag_from_library_prompt` | Remove a tag from a prompt by ids                 |
+| `list_context_snippets` | List saved context snippets (numeric ids for improve_prompt) |
+| `create_context_snippet` | Create a context snippet (optional personal/work tag) |
+| `update_context_snippet` | Update a context snippet's title, text, or global flag |
 | `improve_prompt`        | Improve/refine a prompt (uses your Pretty Prompt credits) |
 
 ## Setup

@@ -64,6 +64,39 @@ export function toolCallProperties(
         has_folder_id: args.folder_id != null,
         prompt_id: typeof args.prompt_id === "number" ? args.prompt_id : 0,
       };
+    case "list_context_snippets":
+      return {
+        has_pagination: args.limit !== undefined,
+        limit: typeof args.limit === "number" ? args.limit : 0,
+        offset: typeof args.offset === "number" ? args.offset : 0,
+        has_tag: typeof args.tag === "string" && args.tag.trim().length > 0,
+        context_type:
+          typeof args.context_type === "string"
+            ? args.context_type
+            : "unspecified",
+      };
+    case "create_context_snippet":
+      return {
+        snippet_length:
+          typeof args.snippet === "string" ? args.snippet.length : 0,
+        has_title:
+          typeof args.title === "string" && args.title.trim().length > 0,
+        has_tag: typeof args.tag === "string" && args.tag.trim().length > 0,
+        context_type:
+          typeof args.context_type === "string"
+            ? args.context_type
+            : "unspecified",
+        is_global: args.is_global === true,
+      };
+    case "update_context_snippet":
+      return {
+        snippet_id: typeof args.snippet_id === "number" ? args.snippet_id : 0,
+        has_title: args.title !== undefined,
+        has_snippet: args.snippet !== undefined,
+        snippet_length:
+          typeof args.snippet === "string" ? args.snippet.length : 0,
+        has_is_global: args.is_global !== undefined,
+      };
     case "improve_prompt":
       return {
         prompt_length:
