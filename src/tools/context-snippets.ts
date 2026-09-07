@@ -269,3 +269,35 @@ export function registerUpdateContextSnippet(
     ),
   );
 }
+
+export function registerDeleteContextSnippet(
+  server: McpServer,
+  backend: BackendClient,
+  analytics: McpAnalytics,
+) {
+  server.registerTool(
+    "delete_context_snippet",
+    {
+      description:
+        "Permanently delete a context snippet by numeric id " +
+        "(from list_context_snippets). This cannot be undone.",
+      inputSchema: {
+        snippet_id: z
+          .number()
+          .int()
+          .positive()
+          .describe("Context snippet ID (from list_context_snippets)"),
+      },
+    },
+    withToolTracking(
+      analytics,
+      "delete_context_snippet",
+      async ({ snippet_id }) => {
+        const result = await backend.delete<{ deleted?: boolean; id?: number }>(
+          `/context/context-snippets/${snippet_id}`,
+        );
+        return textResult(result);
+      },
+    ),
+  );
+}

@@ -32,6 +32,7 @@ import {
   registerListContextSnippets,
   registerCreateContextSnippet,
   registerUpdateContextSnippet,
+  registerDeleteContextSnippet,
 } from "./tools/context-snippets.js";
 
 async function main() {
@@ -43,7 +44,7 @@ async function main() {
 
   const server = new McpServer({
     name: "pretty-prompt",
-    version: "0.3.11",
+    version: "0.3.12",
   });
 
   registerListLibraryPrompts(server, backend, analytics);
@@ -67,6 +68,7 @@ async function main() {
   registerListContextSnippets(server, backend, analytics);
   registerCreateContextSnippet(server, backend, analytics);
   registerUpdateContextSnippet(server, backend, analytics);
+  registerDeleteContextSnippet(server, backend, analytics);
   registerImprovePrompt(server, edge, analytics);
 
   void analytics.trackServerStarted();

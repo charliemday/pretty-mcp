@@ -97,6 +97,10 @@ export function toolCallProperties(
           typeof args.snippet === "string" ? args.snippet.length : 0,
         has_is_global: args.is_global !== undefined,
       };
+    case "delete_context_snippet":
+      return {
+        snippet_id: typeof args.snippet_id === "number" ? args.snippet_id : 0,
+      };
     case "improve_prompt":
       return {
         prompt_length:
