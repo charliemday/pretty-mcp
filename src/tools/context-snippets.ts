@@ -70,21 +70,36 @@ async function fetchSnippet(
   return trimContextSnippet(row);
 }
 
-async function resolveTagId(
+function availableTagSlugs(tags: ContextTagRow[]): string[] {
+  return tags
+    .map((tag) => (tag.slug ?? "").trim())
+    .filter((slug): slug is string => Boolean(slug));
+}
+
+async function resolveContextTag(
   backend: BackendClient,
   slug: string,
-): Promise<string> {
+): Promise<{
+  tagId?: string;
+  warning?: string;
+  availableTags: string[];
+}> {
   const tags = await backend.get<ContextTagRow[]>("/context/context-tags");
+  const availableTags = availableTagSlugs(tags);
   const needle = slug.trim().toLowerCase();
   const match = tags.find(
     (tag) => (tag.slug ?? "").toLowerCase() === needle,
   );
-  if (!match) {
-    throw new Error(
-      `Unknown context tag slug: ${slug}. Use "personal" or "work".`,
-    );
+  if (match) {
+    return { tagId: match.id, availableTags };
   }
-  return match.id;
+  const quoted = availableTags.map((s) => `"${s}"`).join(", ") || "none";
+  return {
+    availableTags,
+    warning:
+      `Unknown context tag slug: ${slug}. ` +
+      `Snippet created without a tag. Available slugs: ${quoted}.`,
+  };
 }
 
 export function registerListContextSnippets(
@@ -116,7 +131,9 @@ export function registerListContextSnippets(
         tag: z
           .string()
           .optional()
-          .describe("Filter by tag slug (personal or work)"),
+          .describe(
+            "Filter by tag slug (personal or work). Unknown slugs match nothing.",
+          ),
         context_type: z
           .string()
           .optional()
@@ -163,14 +180,18 @@ export function registerCreateContextSnippet(
       description:
         "Create a context snippet in the user's Pretty Prompt Context library. " +
         "Returns a numeric id usable with improve_prompt. May take a few " +
-        "seconds while the snippet is normalized.",
+        "seconds while the snippet is normalized. Optional tag must be " +
+        "'personal' or 'work'; unknown slugs are ignored and the snippet " +
+        "is still created.",
       inputSchema: {
         snippet: z.string().describe("Snippet body text"),
         title: z.string().optional().describe("Optional display title"),
         tag: z
           .string()
           .optional()
-          .describe("Optional tag slug to apply (personal or work)"),
+          .describe(
+            "Optional tag slug to apply (personal or work). Unknown slugs are ignored; the snippet is still created.",
+          ),
         context_type: z
           .string()
           .optional()
@@ -193,8 +214,13 @@ export function registerCreateContextSnippet(
         }
 
         let tagId: string | undefined;
+        let warning: string | undefined;
+        let availableTags: string[] | undefined;
         if (tag) {
-          tagId = await resolveTagId(backend, tag);
+          const resolved = await resolveContextTag(backend, tag);
+          tagId = resolved.tagId;
+          warning = resolved.warning;
+          availableTags = resolved.availableTags;
         }
 
         const created = await backend.post<ContextSnippetRow>(
@@ -214,7 +240,16 @@ export function registerCreateContextSnippet(
           });
         }
 
-        return textResult(await fetchSnippet(backend, created.id));
+        const payload = await fetchSnippet(backend, created.id);
+        if (warning) {
+          return textResult({
+            ...payload,
+            warning,
+            available_tags: availableTags,
+            tag_applied: null,
+          });
+        }
+        return textResult(payload);
       },
     ),
   );
